@@ -7,10 +7,12 @@ obraz = cv2.imread(sciezka_obraz)
 if obraz is None:
     print(f"Nie znaleziono pliku: {sciezka_obraz}")
 else:
-    pixel = obraz[0, 0]
+    cv2.imshow("Obraz przed", obraz)
 
-    blue = pixel[0]
-    green = pixel[1]
-    red = pixel[2]
+    obraz[99, :] = [0, 255, 0]
 
-    print(f"R: {red}, G: {green}, B: {blue}")
+    cv2.imshow("Obraz po", obraz)
+
+    cv2.waitKey(0)
+
+    cv2.destroyAllWindows()

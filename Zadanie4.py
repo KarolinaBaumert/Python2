@@ -1,12 +1,28 @@
 import cv2
 
-sciezka_wejsciowa = "image.jfif"
-sciezka_wyjsciowa = "szary_image.jpg"
+sciezka_obraz = "image.jpg"
 
-obraz_szary = cv2.imread(sciezka_wejsciowa, cv2.IMREAD_GRAYSCALE)
+obraz = cv2.imread(sciezka_obraz)
 
-if obraz_szary is None:
-    print(f"Nie znaleziono pliku: {sciezka_wejsciowa}")
+if obraz is None:
+    print(f"Nie znaleziono pliku: {sciezka_obraz}")
 else:
-    cv2.imwrite(sciezka_wyjsciowa, obraz_szary)
-    print(f"Obraz zapisano jako: {sciezka_wyjsciowa}")
+    wysokosc, szerokosc, _ = obraz.shape
+
+    try:
+        x = int(input(f"Podaj współrzędną x (0 - {szerokosc - 1}): "))
+        y = int(input(f"Podaj współrzędną y (0 - {wysokosc - 1}): "))
+
+        if x < 0 or x >= szerokosc or y < 0 or y >= wysokosc:
+            print("Podane współrzędne są poza zakresem obrazu!")
+        else:
+            obraz[y, x] = [0, 0, 0]
+
+            cv2.imshow("Zmodyfikowany obraz", obraz)
+
+            cv2.waitKey(0)
+
+            cv2.destroyAllWindows()
+
+    except ValueError:
+        print("Wprowadź poprawne liczby całkowite!")

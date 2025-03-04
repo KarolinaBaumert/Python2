@@ -9,8 +9,7 @@ if obraz is None:
 else:
     cv2.imshow("Obraz przed", obraz)
 
-    wysokosc, szerokosc, _ = obraz.shape
-    obraz[wysokosc-1, szerokosc-1] = [255, 0, 0]
+    obraz[50:100, 50:100] = [255, 255, 255]
 
     cv2.imshow("Obraz po", obraz)
 
