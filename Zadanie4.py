@@ -1,28 +1,13 @@
 import cv2
+import numpy as np
 
-sciezka_obraz = "image.jpg"
+obraz = np.zeros((300, 300, 3), dtype=np.uint8)
 
-obraz = cv2.imread(sciezka_obraz)
+srodek = (150, 150)
 
-if obraz is None:
-    print(f"Nie znaleziono pliku: {sciezka_obraz}")
-else:
-    wysokosc, szerokosc, _ = obraz.shape
+cv2.rectangle(obraz, (100, 100), (200, 200), (0, 255, 0), -1)
+cv2.circle(obraz, srodek, 30, (0, 0, 255), -1)
 
-    try:
-        x = int(input(f"Podaj współrzędną x (0 - {szerokosc - 1}): "))
-        y = int(input(f"Podaj współrzędną y (0 - {wysokosc - 1}): "))
-
-        if x < 0 or x >= szerokosc or y < 0 or y >= wysokosc:
-            print("Podane współrzędne są poza zakresem obrazu!")
-        else:
-            obraz[y, x] = [0, 0, 0]
-
-            cv2.imshow("Zmodyfikowany obraz", obraz)
-
-            cv2.waitKey(0)
-
-            cv2.destroyAllWindows()
-
-    except ValueError:
-        print("Wprowadź poprawne liczby całkowite!")
+cv2.imshow("Złożona figura", obraz)
+cv2.waitKey(0)
+cv2.destroyAllWindows()

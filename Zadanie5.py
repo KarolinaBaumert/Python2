@@ -1,21 +1,13 @@
 import cv2
+import numpy as np
 
-sciezka_obraz = "image.jpg"
+obraz = np.zeros((400, 400, 3), dtype=np.uint8)
+srodek = (200, 200)
 
-obraz = cv2.imread(sciezka_obraz)
+for i in range(20, 201, 20):
+    cv2.rectangle(obraz, (srodek[0] - i // 2, srodek[1] - i // 2),
+                  (srodek[0] + i // 2, srodek[1] + i // 2), (0, 255, 0), 2)
 
-if obraz is None:
-    print(f"Nie znaleziono pliku: {sciezka_obraz}")
-else:
-    wysokosc, szerokosc, _ = obraz.shape
-
-    pol_wysokosci = wysokosc // 2
-    pol_szerokosci = szerokosc // 2
-
-    obraz[0:pol_wysokosci, 0:pol_szerokosci] = [255, 0, 0]
-
-    cv2.imshow("Obraz po zmianach", obraz)
-
-    cv2.waitKey(0)
-
-    cv2.destroyAllWindows()
+cv2.imshow("Kwadraty", obraz)
+cv2.waitKey(0)
+cv2.destroyAllWindows()

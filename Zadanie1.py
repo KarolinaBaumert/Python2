@@ -1,16 +1,17 @@
 import cv2
 
 sciezka_obraz = "image.jpg"
-
 obraz = cv2.imread(sciezka_obraz)
 
 if obraz is None:
     print(f"Nie znaleziono pliku: {sciezka_obraz}")
 else:
-    pixel = obraz[0, 0]
+    wysokosc, szerokosc, _ = obraz.shape
+    srodek_x, srodek_y = szerokosc // 2, wysokosc // 2
+    prawy_dolny_x, prawy_dolny_y = szerokosc - 1, wysokosc - 1
 
-    blue = pixel[0]
-    green = pixel[1]
-    red = pixel[2]
+    cv2.line(obraz, (srodek_x, srodek_y), (prawy_dolny_x, prawy_dolny_y), (255, 0, 0), 2)
 
-    print(f"R: {red}, G: {green}, B: {blue}")
+    cv2.imshow("Obraz z linią", obraz)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
