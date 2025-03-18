@@ -1,17 +1,15 @@
 import cv2
+import numpy as np
 
 obraz = cv2.imread('image.jpg')
 
-if obraz is None:
-    print("Nie udało się załadować obrazu!")
-else:
-    startX = int(input("Podaj startX: "))
-    endX = int(input("Podaj endX: "))
-    startY = int(input("Podaj startY: "))
-    endY = int(input("Podaj endY: "))
+obraz_filtr = obraz.copy()
+obraz_filtr[:, :, 2] = np.clip(obraz_filtr[:, :, 2] + 30, 0, 255)  # Czerwony +30
+obraz_filtr[:, :, 1] = np.clip(obraz_filtr[:, :, 1] - 20, 0, 255)  # Zielony -20
+obraz_filtr[:, :, 0] = np.clip(obraz_filtr[:, :, 0] + 10, 0, 255)  # Niebieski +10
 
-    roi = obraz[startY:endY, startX:endX]
+cv2.imshow('Original', obraz)
+cv2.imshow('Instagram Filter', obraz_filtr)
 
-    cv2.imshow("Przycięty Obraz", roi)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+cv2.waitKey(0)
+cv2.destroyAllWindows()
