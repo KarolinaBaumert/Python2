@@ -5,10 +5,8 @@ obraz = cv2.imread('image.jpg')
 if obraz is None:
     print("Nie udało się załadować obrazu!")
 else:
-    odbicie_pionowe = cv2.flip(obraz, 0)
-    cv2.imshow('Odbicie pionowe', odbicie_pionowe)
-
-    cv2.imshow('Oryginalny obraz', obraz)
-
+    wysokosc = obraz.shape[0]
+    dolna_polowa = obraz[wysokosc//2:, :]
+    cv2.imshow('Dolna Polowa', dolna_polowa)
     cv2.waitKey(0)
     cv2.destroyAllWindows()

@@ -5,8 +5,8 @@ obraz = cv2.imread('image.jpg')
 if obraz is None:
     print("Nie udało się załadować obrazu!")
 else:
-    odbicie_both = cv2.flip(obraz, -1)
-
-    cv2.imshow('Odbicie względem obu osi', odbicie_both)
+    szerokosc = obraz.shape[1]
+    prawa_polowa = obraz[:, szerokosc//2:]
+    cv2.imshow('Prawa Polowa', prawa_polowa)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
