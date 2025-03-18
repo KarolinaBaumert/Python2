@@ -6,15 +6,12 @@ obraz = cv2.imread('image.jpg')
 if obraz is None:
     print("Nie udało się załadować obrazu!")
 else:
-    (wysokosc, szerokosc) = obraz.shape[:2]
-    center = (szerokosc // 2, wysokosc // 2)
+    for skala in np.arange(1.0, 3.2, 0.2):
+        nowa_szerokosc = int(obraz.shape[1] * skala)
+        nowa_wysokosc = int(obraz.shape[0] * skala)
+        zmieniony_rozmiar = cv2.resize(obraz, (nowa_szerokosc, nowa_wysokosc), interpolation=cv2.INTER_LINEAR)
 
-    M = cv2.getRotationMatrix2D(center, 75, 1)
-    obraz_obrocony = cv2.warpAffine(obraz, M, (szerokosc, wysokosc))
+        cv2.imshow('Dynamiczna zmiana rozmiaru', zmieniony_rozmiar)
+        cv2.waitKey(500)
 
-    cv2.imwrite('rotated_output.jpg', obraz_obrocony)
-    print("Obraz został zapisany jako 'rotated_output.jpg'.")
-
-    cv2.imshow('Obraz po obrocie o 75 stopni', obraz_obrocony)
-    cv2.waitKey(0)
     cv2.destroyAllWindows()

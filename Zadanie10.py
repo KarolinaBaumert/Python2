@@ -1,20 +1,13 @@
 import cv2
-import numpy as np
+import imutils
 
 obraz = cv2.imread('image.jpg')
 
 if obraz is None:
     print("Nie udało się załadować obrazu!")
 else:
-    (wysokosc, szerokosc) = obraz.shape[:2]
-    center = (szerokosc // 2, wysokosc // 2)
-
-    for kąt in range(0, 360, 15):
-        M = cv2.getRotationMatrix2D(center, kąt, 1)
-        obraz_obrocony = cv2.warpAffine(obraz, M, (szerokosc, wysokosc))
-
-        cv2.imshow(f'Obraz obrócony o {kąt} stopni', obraz_obrocony)
-
-        cv2.waitKey(500)
-
+    nowy_obraz = imutils.resize(obraz, width=800)
+    cv2.imwrite('resized_output.jpg', nowy_obraz)
+    cv2.imshow('Powiekszony obraz', nowy_obraz)
+    cv2.waitKey(0)
     cv2.destroyAllWindows()
