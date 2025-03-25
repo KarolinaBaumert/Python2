@@ -8,11 +8,11 @@ if obraz is None:
 else:
     B, G, R = cv2.split(obraz)
 
-    zamieniony = cv2.merge([R, B, G])
-    bez_czerwonego = cv2.merge([B, G, np.zeros_like(R)])
+    R = cv2.add(R, 50)
 
-    cv2.imshow("Zamiana kanałów (R, B, G)", zamieniony)
-    cv2.imshow("Bez czerwonego", bez_czerwonego)
+    wzmocniony = cv2.merge([B, G, R])
+
+    cv2.imshow("Obraz po wzmocnieniu czerwieni", wzmocniony)
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()

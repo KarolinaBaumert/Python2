@@ -1,19 +1,16 @@
 import cv2
-import numpy as np
 
-obraz = cv2.imread('face.jpg')
+obraz = cv2.imread('logo.jpg')
 
 if obraz is None:
     print("Nie udało się załadować obrazu!")
 else:
-    maska = np.ones(obraz.shape[:2], dtype="uint8") * 255
-    cv2.rectangle(maska, (100, 50), (300, 150), 0, -1)
+    B, G, R = cv2.split(obraz)
 
-    wynik = cv2.bitwise_and(obraz, obraz, mask=maska)
-
-    cv2.imshow('Oryginalny Obraz', obraz)
-    cv2.imshow('Maska', maska)
-    cv2.imshow('Wynik Maskowania Oczu', wynik)
+    cv2.imshow("Oryginalny obraz", obraz)
+    cv2.imshow("Blue Channel", B)
+    cv2.imshow("Green Channel", G)
+    cv2.imshow("Red Channel", R)
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()
