@@ -1,15 +1,16 @@
 import cv2
-import numpy as np
 
-obraz = cv2.imread('image.jpg')
+image1 = cv2.imread('image1.jpg')
+image2 = cv2.imread('image2.jpg')
 
-obraz_numpy = np.clip(obraz + 150, 0, 255).astype(np.uint8)
+image1 = cv2.resize(image1, (300, 300))
+image2 = cv2.resize(image2, (300, 300))
 
-obraz_cv2 = cv2.add(obraz, (150, 150, 150, 0))
+difference = cv2.bitwise_xor(image1, image2)
 
-cv2.imshow('Original', obraz)
-cv2.imshow('Brightness Increase with NumPy', obraz_numpy)
-cv2.imshow('Brightness Increase with cv2.add()', obraz_cv2)
+cv2.imshow("Image 1", image1)
+cv2.imshow("Image 2", image2)
+cv2.imshow("XOR Difference", difference)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
