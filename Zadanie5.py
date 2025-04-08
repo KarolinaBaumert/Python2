@@ -1,21 +1,23 @@
 import cv2
 import numpy as np
 
-obraz = cv2.imread('redcar.jpg')
+image = cv2.imread('green.jpg')
 
-if obraz is None:
-    print("Nie udało się załadować obrazu!")
-else:
-    hsv = cv2.cvtColor(obraz, cv2.COLOR_BGR2HSV)
+if image is None:
+    print("Nie udało się wczytać obrazu.")
+    exit()
 
-    dolna_czerwona = np.array([0, 120, 70])
-    gorna_czerwona = np.array([10, 255, 255])
+hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
-    maska = cv2.inRange(hsv, dolna_czerwona, gorna_czerwona)
+lower_green = np.array([35, 40, 40])
+upper_green = np.array([85, 255, 255])
 
-    obraz[maska > 0] = obraz[maska > 0] + (0, 0, 50)
+mask = cv2.inRange(hsv, lower_green, upper_green)
 
-    cv2.imshow("Zwiększone nasycenie czerwonego", obraz)
+result = cv2.bitwise_and(image, image, mask=mask)
 
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+cv2.imshow("Oryginalny obraz", image)
+cv2.imshow("Maska - zielone obiekty", mask)
+cv2.imshow("Zielone elementy", result)
+cv2.waitKey(0)
+cv2.destroyAllWindows()

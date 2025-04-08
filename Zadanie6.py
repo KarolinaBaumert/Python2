@@ -1,18 +1,23 @@
 import cv2
 import numpy as np
 
-logo = cv2.imread('logo.jpg')
+image = cv2.imread('person.jpg')
 
-if logo is None:
-    print("Nie udało się załadować logo!")
-else:
-    B, G, R = cv2.split(logo)
+if image is None:
+    print("Nie udało się wczytać obrazu.")
+    exit()
 
-    zamiana = cv2.merge([R, G, B])
-    bez_niebieskiego = cv2.merge([np.zeros_like(B), G, R])
+hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
-    cv2.imshow("Zamiana B z R", zamiana)
-    cv2.imshow("Bez niebieskiego", bez_niebieskiego)
+lower_skin = np.array([0, 20, 70], dtype=np.uint8)
+upper_skin = np.array([20, 255, 255], dtype=np.uint8)
 
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+mask = cv2.inRange(hsv, lower_skin, upper_skin)
+
+result = cv2.bitwise_and(image, image, mask=mask)
+
+cv2.imshow("Oryginalny obraz", image)
+cv2.imshow("Maska skóry", mask)
+cv2.imshow("Obszary skóry", result)
+cv2.waitKey(0)
+cv2.destroyAllWindows()

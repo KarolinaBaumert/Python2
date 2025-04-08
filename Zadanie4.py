@@ -1,18 +1,23 @@
 import cv2
 import numpy as np
 
-obraz = cv2.imread('image.jpg')
+image = cv2.imread('image.jpg')
 
-if obraz is None:
-    print("Nie udało się załadować obrazu!")
-else:
-    B, G, R = cv2.split(obraz)
+if image is None:
+    print("Nie udało się wczytać obrazu.")
+    exit()
 
-    R = cv2.add(R, 50)
+hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
-    wzmocniony = cv2.merge([B, G, R])
+h, s, v = cv2.split(hsv)
 
-    cv2.imshow("Obraz po wzmocnieniu czerwieni", wzmocniony)
+h = (h.astype(int) + 30) % 180
+h = h.astype(np.uint8)
 
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+hsv_shifted = cv2.merge([h, s, v])
+image_shifted = cv2.cvtColor(hsv_shifted, cv2.COLOR_HSV2BGR)
+
+cv2.imshow('Oryginalny obraz', image)
+cv2.imshow('Zmieniony odcień (H+30)', image_shifted)
+cv2.waitKey(0)
+cv2.destroyAllWindows()

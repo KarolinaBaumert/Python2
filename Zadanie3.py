@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-obraz = cv2.imread('image.jpg')
+obraz = cv2.imread('blue.jpg')
 
 if obraz is None:
     print("Nie udało się załadować obrazu!")
