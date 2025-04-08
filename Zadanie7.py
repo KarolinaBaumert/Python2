@@ -1,28 +1,20 @@
 import cv2
 import numpy as np
 
-image = cv2.imread('image.jpg')
-
+image = cv2.imread("image.jpg")
 if image is None:
-    print("Nie udało się wczytać obrazu.")
+    print("Błąd wczytywania obrazu.")
     exit()
 
-hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-h, s, v = cv2.split(hsv)
+_, otsu_thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
-s_lower = np.clip(s - 50, 0, 255)
-
-s_higher = np.clip(s + 50, 0, 255)
-
-hsv_lower = cv2.merge([h, s_lower, v])
-hsv_higher = cv2.merge([h, s_higher, v])
-
-image_lower = cv2.cvtColor(hsv_lower, cv2.COLOR_HSV2BGR)
-image_higher = cv2.cvtColor(hsv_higher, cv2.COLOR_HSV2BGR)
+masked_image = cv2.bitwise_and(image, image, mask=otsu_thresh)
 
 cv2.imshow("Oryginalny obraz", image)
-cv2.imshow("Obnizone nasycenie", image_lower)
-cv2.imshow("Podwyzszone nasycenie", image_higher)
+cv2.imshow("Binarna maska (Otsu)", otsu_thresh)
+cv2.imshow("Obiekt po wycięciu", masked_image)
+
 cv2.waitKey(0)
 cv2.destroyAllWindows()

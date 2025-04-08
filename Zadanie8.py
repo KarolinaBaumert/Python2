@@ -1,36 +1,29 @@
 import cv2
 import numpy as np
 
-image = cv2.imread('green.jpg')
+image = cv2.imread("kostka-brukowa.jpg")
 if image is None:
-    print("Nie udało się wczytać obrazu.")
+    print("Błąd wczytywania obrazu.")
     exit()
 
-hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-lower_green = np.array([35, 40, 40])
-upper_green = np.array([85, 255, 255])
-mask_green = cv2.inRange(hsv, lower_green, upper_green)
+T = 100
+_, binary_basic = cv2.threshold(gray, T, 255, cv2.THRESH_BINARY)
 
-lower_blue = np.array([90, 50, 50])
-upper_blue = np.array([130, 255, 255])
-mask_blue = cv2.inRange(hsv, lower_blue, upper_blue)
+_, binary_otsu = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
-lower_red1 = np.array([0, 70, 50])
-upper_red1 = np.array([10, 255, 255])
-lower_red2 = np.array([160, 70, 50])
-upper_red2 = np.array([180, 255, 255])
-mask_red1 = cv2.inRange(hsv, lower_red1, upper_red1)
-mask_red2 = cv2.inRange(hsv, lower_red2, upper_red2)
-mask_red = cv2.bitwise_or(mask_red1, mask_red2)
+blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+_, binary_blurred = cv2.threshold(blurred, T, 255, cv2.THRESH_BINARY)
 
-combined_mask = cv2.bitwise_or(mask_red, mask_green)
-combined_mask = cv2.bitwise_or(combined_mask, mask_blue)
-
-result = cv2.bitwise_and(image, image, mask=combined_mask)
+kernel = np.ones((3, 3), np.uint8)
+eroded = cv2.erode(binary_blurred, kernel, iterations=1)
 
 cv2.imshow("Oryginalny obraz", image)
-cv2.imshow("Maska kolorów", combined_mask)
-cv2.imshow("Wykryte kolory", result)
+cv2.imshow("Progowanie podstawowe (T=100)", binary_basic)
+cv2.imshow("Progowanie Otsu", binary_otsu)
+cv2.imshow("Rozmycie + Progowanie (T=100)", binary_blurred)
+cv2.imshow("Erozja po rozmyciu", eroded)
+
 cv2.waitKey(0)
 cv2.destroyAllWindows()

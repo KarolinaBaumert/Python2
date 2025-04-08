@@ -1,30 +1,22 @@
 import cv2
-import numpy as np
-import matplotlib.pyplot as plt
 
-image_bgr = cv2.imread('image.jpg')
-image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
+image = cv2.imread("image.jpg")
+if image is None:
+    print("Błąd wczytywania obrazu.")
+    exit()
 
-image_hsv = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2HSV)
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-H, S, V = cv2.split(image_hsv)
+blurred = cv2.GaussianBlur(gray, (5, 5), 0)
 
-S_mod = cv2.add(S, 30)
+_, thresh_no_blur = cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY)
 
-hsv_mod = cv2.merge([H, S_mod, V])
+_, thresh_with_blur = cv2.threshold(blurred, 100, 255, cv2.THRESH_BINARY)
 
-image_mod_rgb = cv2.cvtColor(hsv_mod, cv2.COLOR_HSV2RGB)
+cv2.imshow("Oryginalny obraz (szarość)", gray)
+cv2.imshow("Obraz po rozmyciu Gaussa", blurred)
+cv2.imshow("Progowanie bez rozmycia", thresh_no_blur)
+cv2.imshow("Progowanie po rozmyciu", thresh_with_blur)
 
-plt.figure(figsize=(10, 5))
-plt.subplot(1, 2, 1)
-plt.imshow(image_rgb)
-plt.title('Oryginalny')
-plt.axis('off')
-
-plt.subplot(1, 2, 2)
-plt.imshow(image_mod_rgb)
-plt.title('Zwiększone nasycenie (S +30)')
-plt.axis('off')
-
-plt.tight_layout()
-plt.show()
+cv2.waitKey(0)
+cv2.destroyAllWindows()
