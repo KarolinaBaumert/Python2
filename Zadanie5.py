@@ -1,18 +1,27 @@
 import cv2
-import numpy as np
 
-image = cv2.imread("image.jpg")
+image = cv2.imread("elementy.jpg")
 if image is None:
-    print("Błąd wczytywania obrazu.")
+    print("Nie znaleziono obrazu!")
     exit()
 
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-brightened_image = cv2.add(gray, 50)  # Zwiększamy jasność każdego piksela
+blurred = cv2.GaussianBlur(gray, (5, 5), 0)
 
-_, otsu_thresh = cv2.threshold(brightened_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+thresh = cv2.adaptiveThreshold(blurred, 255,
+                               cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                               cv2.THRESH_BINARY_INV,
+                               blockSize=21,
+                               C=10)
 
-cv2.imshow("Obraz rozjaśniony - Progowanie Otsu", otsu_thresh)
+kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+cleaned = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)
 
+roi = cv2.bitwise_and(image, image, mask=cleaned)
+
+cv2.imshow("Oryginalny", image)
+cv2.imshow("Maska ROI", cleaned)
+cv2.imshow("Obiekty (ROI)", roi)
 cv2.waitKey(0)
 cv2.destroyAllWindows()

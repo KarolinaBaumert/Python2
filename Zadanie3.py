@@ -1,22 +1,24 @@
 import cv2
-import numpy as np
 
-image = cv2.imread("image.jpg")
+image = cv2.imread("kostka_brukowa1.jpg")
 if image is None:
-    print("Błąd wczytywania obrazu.")
+    print("Nie udało się wczytać obrazu.")
     exit()
 
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+block_size = 21
+C_values = [2, 5, 10, 15]
 
-_, thresh_with_blur = cv2.threshold(blurred, 100, 255, cv2.THRESH_BINARY)
+for method, method_name in [(cv2.ADAPTIVE_THRESH_MEAN_C, "Mean"),
+                            (cv2.ADAPTIVE_THRESH_GAUSSIAN_C, "Gaussian")]:
+    for C in C_values:
+        thresh = cv2.adaptiveThreshold(gray, 255,
+                                       method,
+                                       cv2.THRESH_BINARY,
+                                       block_size, C)
+        cv2.imshow(f"{method_name} - C={C}", thresh)
 
-kernel = np.ones((3, 3), np.uint8)  # Struktura elementu (np. 3x3)
-eroded_image = cv2.erode(thresh_with_blur, kernel, iterations=1)
-
-cv2.imshow("Obraz przed erozją", thresh_with_blur)
-cv2.imshow("Obraz po erozji", eroded_image)
-
+cv2.imshow("Oryginalny", gray)
 cv2.waitKey(0)
 cv2.destroyAllWindows()

@@ -1,22 +1,20 @@
 import cv2
 
-image = cv2.imread("image.jpg")
+image = cv2.imread("kostka_brukowa1.jpg")
 if image is None:
-    print("Błąd wczytywania obrazu.")
+    print("Nie udało się wczytać obrazu.")
     exit()
 
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+block_sizes = [11, 21, 31, 41]
 
-_, thresh_no_blur = cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY)
+for bsize in block_sizes:
+    thresh = cv2.adaptiveThreshold(gray, 255,
+                                   cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                   cv2.THRESH_BINARY, bsize, 5)
+    cv2.imshow(f"blockSize = {bsize}", thresh)
 
-_, thresh_with_blur = cv2.threshold(blurred, 100, 255, cv2.THRESH_BINARY)
-
-cv2.imshow("Oryginalny obraz (szarość)", gray)
-cv2.imshow("Obraz po rozmyciu Gaussa", blurred)
-cv2.imshow("Progowanie bez rozmycia", thresh_no_blur)
-cv2.imshow("Progowanie po rozmyciu", thresh_with_blur)
-
+cv2.imshow("Oryginalny", gray)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
