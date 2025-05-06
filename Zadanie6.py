@@ -1,39 +1,29 @@
 import cv2
 
-image = cv2.imread('image.jpg')
-if image is None:
-    print("Nie znaleziono obrazu!")
+img = cv2.imread('kostka-brukowa.jpg')
+if img is None:
+    print("Nie można wczytać obrazu.")
     exit()
 
-gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+scale_width = 300
+scale_factor = scale_width / img.shape[1]
+dim = (scale_width, int(img.shape[0] * scale_factor))
+resized = cv2.resize(img, dim)
 
-def update(x):
-    try:
-        block_size = cv2.getTrackbarPos('BlockSize', 'Segmentacja')
-        c_value = cv2.getTrackbarPos('C', 'Segmentacja') - 20
-    except:
-        return
+gray = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
+_, thresh = cv2.threshold(gray, 140, 255, cv2.THRESH_BINARY)
 
-    if block_size % 2 == 0:
-        block_size += 1
-    if block_size < 3:
-        block_size = 3
+contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    thresh = cv2.adaptiveThreshold(blurred, 255,
-                                   cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-                                   cv2.THRESH_BINARY_INV,
-                                   block_size,
-                                   c_value)
+filtered_contours = []
+for cnt in contours:
+    area = cv2.contourArea(cnt)
+    if 500 < area < 5000:
+        filtered_contours.append(cnt)
 
-    cv2.imshow('Segmentacja', thresh)
+output = resized.copy()
+cv2.drawContours(output, filtered_contours, -1, (0, 0, 255), 2)
 
-cv2.namedWindow('Segmentacja')
-
-cv2.createTrackbar('BlockSize', 'Segmentacja', 11, 51, update)
-cv2.createTrackbar('C', 'Segmentacja', 20, 40, update)
-
-update(0)
-
+cv2.imshow('Kontury po filtracji', output)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
