@@ -1,27 +1,26 @@
 import cv2
 
-original = cv2.imread('kostka-brukowa.jpg')
-if original is None:
-    print("Nie można załadować obrazu.")
-    exit()
+butelka = cv2.imread('Fanta.jpg')
+logo = cv2.imread('fanta_logo.jfif')
 
-scales = [100, 50, 25]
+def sprawdz_skalowanie(obraz, skala, nazwa):
+    szerokosc = int(obraz.shape[1] * skala)
+    wysokosc = int(obraz.shape[0] * skala)
+    obraz_skalowany = cv2.resize(obraz, (szerokosc, wysokosc))
 
-for scale in scales:
-    width = int(original.shape[1] * scale / 100)
-    height = int(original.shape[0] * scale / 100)
-    resized = cv2.resize(original, (width, height))
+    wynik = cv2.matchTemplate(obraz_skalowany, logo, cv2.TM_CCOEFF_NORMED)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(wynik)
 
-    gray = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
-    _, thresh = cv2.threshold(gray, 140, 255, cv2.THRESH_BINARY)
+    h, w = logo.shape[:2]
+    top_left = max_loc
+    bottom_right = (top_left[0] + w, top_left[1] + h)
+    cv2.rectangle(obraz_skalowany, top_left, bottom_right, (0, 255, 0), 2)
 
-    contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    print(f"[{nazwa}] Skala: {skala}, maxVal: {max_val:.4f}")
+    cv2.imshow(nazwa, obraz_skalowany)
 
-    contour_img = resized.copy()
-    cv2.drawContours(contour_img, contours, -1, (0, 0, 255), 2)
-
-    print(f"Skala: {scale}% - Liczba konturów: {len(contours)}")
-    cv2.imshow(f'Kontury - {scale}%', contour_img)
+sprawdz_skalowanie(butelka, 0.8, "Pomniejszony o 20%")
+sprawdz_skalowanie(butelka, 1.2, "Powiększony o 20%")
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()

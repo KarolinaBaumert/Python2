@@ -1,29 +1,20 @@
 import cv2
 
-img = cv2.imread('kostka-brukowa.jpg')
-if img is None:
-    print("Nie można załadować obrazu.")
-    exit()
+zrzut = cv2.imread('insta.jpg')
+szablon = cv2.imread('lupa.jpg')
+h, w = szablon.shape[:2]
 
-scale_width = 300
-scale_factor = scale_width / img.shape[1]
-dim = (scale_width, int(img.shape[0] * scale_factor))
-resized = cv2.resize(img, dim)
+wynik = cv2.matchTemplate(zrzut, szablon, cv2.TM_CCOEFF_NORMED)
 
-gray = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
-_, thresh = cv2.threshold(gray, 140, 255, cv2.THRESH_BINARY)
+min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(wynik)
+top_left = max_loc
+bottom_right = (top_left[0] + w, top_left[1] + h)
 
-contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+cv2.rectangle(zrzut, top_left, bottom_right, (0, 255, 0), 2)
 
-for cnt in contours:
-    x, y, w, h = cv2.boundingRect(cnt)
+print(f"Dopasowanie (maxVal): {max_val:.4f}")
+print(f"Współrzędne dopasowania: {top_left}")
 
-    cv2.rectangle(resized, (x, y), (x+w, y+h), (0, 255, 0), 2)
-
-    label = f"{w}x{h} px"
-    cv2.putText(resized, label, (x, y - 5),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
-
-cv2.imshow('Pomiar wymiarów kostek', resized)
+cv2.imshow("Dopasowanie ikony", zrzut)
 cv2.waitKey(0)
 cv2.destroyAllWindows()

@@ -1,32 +1,29 @@
 import cv2
+import imutils
 
-image = cv2.imread('kostka-brukowa.jpg')
-if image is None:
-    print("Nie można załadować obrazu.")
+butelka = cv2.imread('Fanta.jpg')
+logo = cv2.imread('fanta_logo.jfif')
+
+if butelka is None or logo is None:
+    print("Nie udało się wczytać obrazów.")
     exit()
 
-scale_percent = 300 / image.shape[1] * 100
-width = 300
-height = int(image.shape[0] * scale_percent / 100)
-resized = cv2.resize(image, (width, height))
-gray = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
+def sprawdz_dopasowanie(obraz, kat_obrotu):
+    obrocony = imutils.rotate(obraz, kat_obrotu)
 
-_, thresh = cv2.threshold(gray, 140, 255, cv2.THRESH_BINARY)
+    wynik = cv2.matchTemplate(obrocony, logo, cv2.TM_CCOEFF_NORMED)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(wynik)
 
-modes = {
-    "RETR_EXTERNAL": cv2.RETR_EXTERNAL,
-    "RETR_TREE": cv2.RETR_TREE,
-    "RETR_LIST": cv2.RETR_LIST
-}
+    h, w = logo.shape[:2]
+    top_left = max_loc
+    bottom_right = (top_left[0] + w, top_left[1] + h)
+    cv2.rectangle(obrocony, top_left, bottom_right, (0, 0, 255), 2)
 
-for name, mode in modes.items():
-    contour_image = resized.copy()
+    print(f"Obrót: {kat_obrotu}°, maxVal: {max_val:.4f}")
+    cv2.imshow(f'Obrót {kat_obrotu}°', obrocony)
 
-    contours, hierarchy = cv2.findContours(thresh, mode, cv2.CHAIN_APPROX_SIMPLE)
-
-    cv2.drawContours(contour_image, contours, -1, (0, 0, 255), 2)
-
-    cv2.imshow(f'Contours - {name}', contour_image)
+sprawdz_dopasowanie(butelka, 30)
+sprawdz_dopasowanie(butelka, 45)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()

@@ -1,22 +1,25 @@
 import cv2
 
-image = cv2.imread('kostka-brukowa.jpg')
-if image is None:
-    print("Nie można załadować obrazu.")
+butelka = cv2.imread('Fanta.jpg')
+logo = cv2.imread('fanta_logo.jfif')
+
+if butelka is None or logo is None:
+    print("Nie udało się wczytać obrazów.")
     exit()
 
-scale_percent = 300 / image.shape[1] * 100
-width = 300
-height = int(image.shape[0] * scale_percent / 100)
-resized = cv2.resize(image, (width, height))
+wynik = cv2.matchTemplate(butelka, logo, cv2.TM_CCOEFF_NORMED)
 
-gray = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
+min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(wynik)
 
-thresholds = [100, 140, 180]
+h, w = logo.shape[:2]
 
-for t in thresholds:
-    _, thresh_img = cv2.threshold(gray, t, 255, cv2.THRESH_BINARY)
-    cv2.imshow(f'Threshold = {t}', thresh_img)
+top_left = max_loc
+bottom_right = (top_left[0] + w, top_left[1] + h)
+cv2.rectangle(butelka, top_left, bottom_right, (0, 0, 255), 2)
 
+print(f"Pozycja wykrytego logo: {top_left}")
+print(f"Wartość dopasowania (maxVal): {max_val:.4f}")
+
+cv2.imshow('Wykryte logo', butelka)
 cv2.waitKey(0)
 cv2.destroyAllWindows()

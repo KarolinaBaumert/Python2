@@ -1,29 +1,18 @@
 import cv2
+import numpy as np
 
-img = cv2.imread('kostka-brukowa.jpg')
-if img is None:
-    print("Nie można wczytać obrazu.")
-    exit()
+scene = cv2.imread('klocki.jpg')
+template = cv2.imread('klocek.jpg')
+h, w = template.shape[:2]
 
-scale_width = 300
-scale_factor = scale_width / img.shape[1]
-dim = (scale_width, int(img.shape[0] * scale_factor))
-resized = cv2.resize(img, dim)
+result = cv2.matchTemplate(scene, template, cv2.TM_CCOEFF_NORMED)
 
-gray = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
-_, thresh = cv2.threshold(gray, 140, 255, cv2.THRESH_BINARY)
+threshold = 0.8
+loc = np.where(result >= threshold)
 
-contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+for pt in zip(*loc[::-1]):
+    cv2.rectangle(scene, pt, (pt[0] + w, pt[1] + h), (0, 0, 255), 2)
 
-filtered_contours = []
-for cnt in contours:
-    area = cv2.contourArea(cnt)
-    if 500 < area < 5000:
-        filtered_contours.append(cnt)
-
-output = resized.copy()
-cv2.drawContours(output, filtered_contours, -1, (0, 0, 255), 2)
-
-cv2.imshow('Kontury po filtracji', output)
+cv2.imshow("Detekcja wielu szablonów", scene)
 cv2.waitKey(0)
 cv2.destroyAllWindows()

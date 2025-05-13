@@ -1,35 +1,37 @@
 import cv2
-import os
+import numpy as np
 
-img = cv2.imread('kostka-brukowa.jpg')
-if img is None:
-    print("Nie można załadować obrazu.")
-    exit()
+obraz = cv2.imread('Fanta.jpg')
+szablon = cv2.imread('fanta_logo.jfif')
+h, w = szablon.shape[:2]
 
-scale_width = 300
-scale_factor = scale_width / img.shape[1]
-dim = (scale_width, int(img.shape[0] * scale_factor))
-resized = cv2.resize(img, dim)
+metody = [
+    ('TM_CCOEFF', cv2.TM_CCOEFF),
+    ('TM_CCOEFF_NORMED', cv2.TM_CCOEFF_NORMED),
+    ('TM_CCORR', cv2.TM_CCORR),
+    ('TM_CCORR_NORMED', cv2.TM_CCORR_NORMED),
+    ('TM_SQDIFF', cv2.TM_SQDIFF),
+    ('TM_SQDIFF_NORMED', cv2.TM_SQDIFF_NORMED)
+]
 
-gray = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
-_, thresh = cv2.threshold(gray, 140, 255, cv2.THRESH_BINARY)
+for nazwa, metoda in metody:
+    kopia = obraz.copy()
 
-contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    wynik = cv2.matchTemplate(kopia, szablon, metoda)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(wynik)
 
-output_dir = 'kostki'
-os.makedirs(output_dir, exist_ok=True)
+    if metoda in [cv2.TM_SQDIFF, cv2.TM_SQDIFF_NORMED]:
+        top_left = min_loc
+        dopasowanie = min_val
+    else:
+        top_left = max_loc
+        dopasowanie = max_val
 
-for i, cnt in enumerate(contours, start=1):
-    x, y, w, h = cv2.boundingRect(cnt)
+    bottom_right = (top_left[0] + w, top_left[1] + h)
+    cv2.rectangle(kopia, top_left, bottom_right, (0, 0, 255), 2)
 
-    kostka = resized[y:y+h, x:x+w]
-    filename = os.path.join(output_dir, f'kostka_{i:02d}.png')
-    cv2.imwrite(filename, kostka)
+    print(f"[{nazwa}] Dopasowanie: {dopasowanie:.4f}  Współrzędne: {top_left}")
+    cv2.imshow(nazwa, kopia)
 
-    cx, cy = x + w // 2, y + h // 2
-    cv2.putText(resized, str(i), (cx - 10, cy + 10),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
-
-cv2.imshow('Numerowane kostki', resized)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
