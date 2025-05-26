@@ -1,0 +1,63 @@
+10.jpg: IoU=0.7342
+109.jpg: IoU=0.9038
+110.jpg: IoU=0.8052
+111.jpg: IoU=0.9075
+112.jpg: IoU=0.9479
+115.jpg: brak wykrycia
+122.jpg: IoU=0.9018
+124.jpg: IoU=0.8854
+127.jpg: IoU=0.9588
+13.jpg: IoU=0.7915
+134.jpg: IoU=0.7930
+135.jpg: IoU=0.9175
+138.jpg: IoU=0.9320
+14.jpg: IoU=0.8310
+145.jpg: IoU=0.9190
+146.jpg: IoU=0.9643
+148.jpg: brak wykrycia
+149.jpg: IoU=0.9531
+150.jpg: IoU=0.9714
+151.jpg: IoU=0.7784
+152.jpg: IoU=0.8986
+155.jpg: IoU=0.8756
+158.jpg: IoU=0.8232
+161.jpg: IoU=0.9068
+168.jpg: IoU=0.9226
+174.jpg: IoU=0.8660
+177.jpg: IoU=0.8256
+185.jpg: IoU=0.9206
+186.jpg: brak wykrycia
+191.jpg: IoU=0.8931
+20.jpg: IoU=0.8072
+21.jpg: IoU=0.9476
+23.jpg: IoU=0.8888
+28.jpg: IoU=0.8557
+3.jpg: IoU=0.9076
+30.jpg: IoU=0.9198
+31.jpg: IoU=0.8205
+33.jpg: IoU=0.7722
+34.jpg: IoU=0.8776
+36.jpg: IoU=0.9039
+38.jpg: IoU=0.8802
+39.jpg: IoU=0.8691
+45.jpg: IoU=0.8220
+50.jpg: IoU=0.8403
+51.jpg: IoU=0.9018
+61.jpg: IoU=0.8861
+62.jpg: IoU=0.8643
+64.jpg: IoU=0.9214
+65.jpg: IoU=0.7922
+69.jpg: IoU=0.8986
+7.jpg: IoU=0.8451
+71.jpg: IoU=0.9442
+76.jpg: IoU=0.8745
+79.jpg: IoU=0.8688
+8.jpg: IoU=0.8149
+84.jpg: IoU=0.9461
+87.jpg: IoU=0.8603
+9.jpg: IoU=0.8174
+90.jpg: IoU=0.0211
+
+Średnie IoU: 0.8607
+Wykryto obiekty na 56 obrazach.
+Brak wykryć na 3 obrazach.
