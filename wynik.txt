@@ -61,3 +61,6 @@
 Średnie IoU: 0.8607
 Wykryto obiekty na 56 obrazach.
 Brak wykryć na 3 obrazach.
+Czas odczytu: 13.28 sekund
+Dokładność: 86/106 = 81.13%
+Ocena końcowa: 4.0
